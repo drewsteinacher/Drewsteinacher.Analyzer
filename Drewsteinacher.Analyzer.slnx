@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Drewsteinacher.Analyzer/Drewsteinacher.Analyzer.Sample/Drewsteinacher.Analyzer.Sample.csproj" />
+  <Project Path="Drewsteinacher.Analyzer/Drewsteinacher.Analyzer.Tests/Drewsteinacher.Analyzer.Tests.csproj" />
+  <Project Path="Drewsteinacher.Analyzer/Drewsteinacher.Analyzer/Drewsteinacher.Analyzer.csproj" />
+</Solution>
