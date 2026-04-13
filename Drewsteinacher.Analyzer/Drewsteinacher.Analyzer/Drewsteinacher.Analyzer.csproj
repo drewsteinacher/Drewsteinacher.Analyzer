@@ -2,15 +2,31 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <IsPackable>false</IsPackable>
+        <IsPackable>true</IsPackable>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
 
         <RootNamespace>Drewsteinacher.Analyzer</RootNamespace>
         <AssemblyName>Drewsteinacher.Analyzer</AssemblyName>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>Drewsteinacher.Analyzer</PackageId>
+        <Version>1.0.0</Version>
+        <Copyright>Copyright (c) drewsteinacher 2026</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Authors>drewsteinacher</Authors>
+        <Description>A personal collection of Roslyn Analyzer rules</Description>
+        <PackageProjectUrl>https://github.com/drewsteinacher/Drewsteinacher.Analyzer</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/drewsteinacher/Drewsteinacher.Analyzer</RepositoryUrl>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>analyzers;roslyn;csharp;code-analysis;code-quality;static-analysis</PackageTags>
+        <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,6 +36,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.3.0"/>
+        <None Include="../../README.md" Pack="true" PackagePath="\"/>
+        <None Include="../../LICENSE.txt" Pack="true" PackagePath=""/>
     </ItemGroup>
-
 </Project>
