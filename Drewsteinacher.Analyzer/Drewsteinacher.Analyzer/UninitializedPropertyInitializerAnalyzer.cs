@@ -52,6 +52,7 @@ public class UninitializedPropertyInitializerAnalyzer : DiagnosticAnalyzer
     {
         if (context.Operation is not IObjectOrCollectionInitializerOperation
             {
+                Syntax: InitializerExpressionSyntax initializerSyntax,
                 Parent: IMemberInitializerOperation memberInitializer
             })
         {
@@ -79,8 +80,11 @@ public class UninitializedPropertyInitializerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var diagnostic
-            = Diagnostic.Create(Rule, context.Operation.Syntax.GetLocation(), propertySymbol.Name);
+        // Highlight the opening brace to make nested issues less cumbersome
+        // TODO: Highlight 'Property = {' instead?
+        var location = initializerSyntax.OpenBraceToken.GetLocation();
+
+        var diagnostic = Diagnostic.Create(Rule, location, propertySymbol.Name);
 
         context.ReportDiagnostic(diagnostic);
     }

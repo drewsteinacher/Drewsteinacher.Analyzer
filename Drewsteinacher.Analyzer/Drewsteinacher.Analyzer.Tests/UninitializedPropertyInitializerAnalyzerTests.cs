@@ -116,7 +116,7 @@ public class UninitializedPropertyInitializerAnalyzerTests
               """;
 
         var expected = Verifier.Diagnostic()
-            .WithSpan(23, 11, 25, 12)
+            .WithSpan(23, 11, 23, 12)
             .WithArguments("NestedWithoutInitialization");
         await Verifier.VerifyAnalyzerAsync(text, expected).ConfigureAwait(false);
     }
@@ -169,7 +169,7 @@ public class UninitializedPropertyInitializerAnalyzerTests
               """;
 
         var expected = Verifier.Diagnostic()
-            .WithSpan(34, 15, 36, 16)
+            .WithSpan(34, 15, 34, 16)
             .WithArguments("NestedLevel3WithoutInitialization");
         await Verifier.VerifyAnalyzerAsync(text, expected).ConfigureAwait(false);
     }
