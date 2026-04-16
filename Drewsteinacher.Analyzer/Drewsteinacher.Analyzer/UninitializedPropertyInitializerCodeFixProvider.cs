@@ -20,7 +20,7 @@ public class UninitializedPropertyInitializerCodeFixProvider : CodeFixProvider
     public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } =
         ImmutableArray.Create(UninitializedPropertyInitializerAnalyzer.DiagnosticId);
 
-    public override FixAllProvider? GetFixAllProvider() => null;
+    public override FixAllProvider? GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
@@ -41,16 +41,16 @@ public class UninitializedPropertyInitializerCodeFixProvider : CodeFixProvider
 
         var objectCreationPreview = operation switch
         {
-            // Prefer 'new Type {...}'
-            { Type.Name: not (null or "") } => $"new {operation.Type.Name} {{...}}",
+            // TODO: Show 'new Type {...}' eventually?
+            // { Type.Name: not (null or "") } => $"new {operation.Type.Name} {{...}}",
             
             // Fall back to 'new() {...}'
-            _ => "new() {...}"
+            _ => "new"
         };
 
         context.RegisterCodeFix(
             CodeAction.Create(
-                title: $"Add '{objectCreationPreview}'",
+                title: $"Add '{objectCreationPreview}' to prevent runtime error",
                 createChangedSolution: c => AddNewObjectSyntaxAsync(context.Document, initializerExpressionSyntax, c),
                 equivalenceKey: nameof(UninitializedPropertyInitializerCodeFixProvider)),
             diagnostic);
@@ -70,6 +70,7 @@ public class UninitializedPropertyInitializerCodeFixProvider : CodeFixProvider
         var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
         var operation = semanticModel?.GetOperation(initializerExpressionSyntax, cancellationToken);
         
+        // TODO: Make this configurable via .editorconfig?
         var (type, arguments) = operation switch
         {
             // Prefer 'new Type {...}'
@@ -86,6 +87,7 @@ public class UninitializedPropertyInitializerCodeFixProvider : CodeFixProvider
             initializerExpressionSyntax);
         
         // Maintain surrounding indentation
+        // TODO: Remove trivia between the 'new' stuff and the initializer expression to improve formatting
         var newObjectWithTrivia = newObjectCreation.WithLeadingTrivia(initializerExpressionSyntax.GetLeadingTrivia());
         
         var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
