@@ -14,4 +14,4 @@ A personal collection of Roslyn Analyzer rules.
 
 | Id                                                                                                         | Category | Description                                           | Severity | Is enabled | Code fix |
 |------------------------------------------------------------------------------------------------------------|----------|-------------------------------------------------------|:--------:|:----------:|:--------:|
-| [DRWSTR0001](https://github.com/drewsteinacher/Drewsteinacher.Analyzer/blob/main/docs/DRWSTR0001.md) | Usage    | Uninitialized property assigned in member initializer |    ❌     |     ✔️     |    ❌     |
+| [DRWSTR0001](https://github.com/drewsteinacher/Drewsteinacher.Analyzer/blob/main/docs/DRWSTR0001.md) | Usage    | Uninitialized property assigned in member initializer |    ❌     |     ✔️     |    ✔️     |

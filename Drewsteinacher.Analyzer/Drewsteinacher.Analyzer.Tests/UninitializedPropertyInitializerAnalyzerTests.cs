@@ -8,7 +8,7 @@ using Verifier =
 
 namespace Drewsteinacher.Analyzer.Tests;
 
-public class MySyntaxAnalyzerTests
+public class UninitializedPropertyInitializerAnalyzerTests
 {
     private class Outer
     {
