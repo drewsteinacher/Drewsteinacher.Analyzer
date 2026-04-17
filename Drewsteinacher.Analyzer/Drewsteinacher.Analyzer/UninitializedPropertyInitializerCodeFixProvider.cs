@@ -26,22 +26,22 @@ public class UninitializedPropertyInitializerCodeFixProvider : CodeFixProvider
     {
         var diagnostic = context.Diagnostics.Single();
         var diagnosticSpan = diagnostic.Location.SourceSpan;
-        
+
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
         var diagnosticNode = root?.FindNode(diagnosticSpan);
-        
-        if (diagnosticNode is not InitializerExpressionSyntax initializerExpressionSyntax)
+
+        if (diagnosticNode is not AssignmentExpressionSyntax { Right: InitializerExpressionSyntax initializer })
         {
             return;
         }
 
         // Get the semantic model to determine the actual property type
         var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
-        var operation = semanticModel?.GetOperation(initializerExpressionSyntax, context.CancellationToken);
+        var operation = semanticModel?.GetOperation(initializer, context.CancellationToken);
 
         var objectCreationPreview = operation switch
         {
-            // TODO: Show 'new Type {...}' eventually?
+            // TODO: Show 'new Type {...}'? Makes batch fixing text misleading...
             // { Type.Name: not (null or "") } => $"new {operation.Type.Name} {{...}}",
             
             // Fall back to 'new() {...}'
@@ -51,7 +51,7 @@ public class UninitializedPropertyInitializerCodeFixProvider : CodeFixProvider
         context.RegisterCodeFix(
             CodeAction.Create(
                 title: $"Add '{objectCreationPreview}' to prevent runtime error",
-                createChangedSolution: c => AddNewObjectSyntaxAsync(context.Document, initializerExpressionSyntax, c),
+                createChangedSolution: c => AddNewObjectSyntaxAsync(context.Document, initializer, c),
                 equivalenceKey: nameof(UninitializedPropertyInitializerCodeFixProvider)),
             diagnostic);
     }
@@ -70,7 +70,7 @@ public class UninitializedPropertyInitializerCodeFixProvider : CodeFixProvider
         var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
         var operation = semanticModel?.GetOperation(initializerExpressionSyntax, cancellationToken);
         
-        // TODO: Make this configurable via .editorconfig?
+        // TODO: Make this configurable via .editorconfig? Support 'new Type() {...}' as well?
         var (type, arguments) = operation switch
         {
             // Prefer 'new Type {...}'
@@ -87,7 +87,8 @@ public class UninitializedPropertyInitializerCodeFixProvider : CodeFixProvider
             initializerExpressionSyntax);
         
         // Maintain surrounding indentation
-        // TODO: Remove trivia between the 'new' stuff and the initializer expression to improve formatting
+        // TODO: Remove trivia between the 'new' stuff and the initializer expression to improve formatting?
+        //  This could also be configurable via .editorconfig
         var newObjectWithTrivia = newObjectCreation.WithLeadingTrivia(initializerExpressionSyntax.GetLeadingTrivia());
         
         var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);

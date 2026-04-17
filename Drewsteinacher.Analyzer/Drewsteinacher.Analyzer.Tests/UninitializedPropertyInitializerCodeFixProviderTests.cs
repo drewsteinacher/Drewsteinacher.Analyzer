@@ -77,7 +77,7 @@ public class UninitializedPropertyInitializerCodeFixProviderTests
               """;
 
         var expected = Verifier.Diagnostic()
-            .WithSpan(23, 11, 23, 12)
+            .WithSpan(22, 11, 23, 12)
             .WithArguments("NestedWithoutInitialization");
         await Verifier.VerifyCodeFixAsync(exampleCode, expected, expectedCode).ConfigureAwait(false);
     }

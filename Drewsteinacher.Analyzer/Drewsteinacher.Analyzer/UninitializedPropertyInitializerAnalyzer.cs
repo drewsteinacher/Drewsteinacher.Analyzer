@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Drewsteinacher.Analyzer;
 
@@ -80,9 +81,14 @@ public class UninitializedPropertyInitializerAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // Highlight the opening brace to make nested issues less cumbersome
-        // TODO: Highlight 'Property = {' instead?
-        var location = initializerSyntax.OpenBraceToken.GetLocation();
+        // Highlight from the start of the initializer to the opening brace
+        // 1. Shows where the 'new' syntax should go
+        // 2. Is a larger target than the opening brace by itself
+        // 3. Is less obnoxious than highlighting the entire initializer
+        // 4. Allows for showing nested problems individually
+        var location = Location.Create(
+            memberInitializer.Syntax.SyntaxTree,
+            TextSpan.FromBounds(memberInitializer.Syntax.SpanStart, initializerSyntax.OpenBraceToken.Span.End));
 
         var diagnostic = Diagnostic.Create(Rule, location, propertySymbol.Name);
 
