@@ -17,9 +17,9 @@ public class UninitializedPropertyInitializerAnalyzer : DiagnosticAnalyzer
     public const string DiagnosticId = "DRWSTR0001";
     private static readonly LocalizableString Title = "Uninitialized property assigned in member initializer";
     private static readonly LocalizableString MessageFormat
-        = "To prevent runtime errors, add 'new()' here or initialize property '{0}' with a non-null default value";
+        = "To prevent runtime errors, add 'new' here or initialize property '{0}' with a non-null default value";
     private static readonly LocalizableString Description
-        = "Properties without initializers cannot be used directly in a member initializer without causing a NullReferenceException at runtime. Either use 'new()' syntax in the member initializer or initialize the property with a default value (e.g.,'Property { get; set; } = new ClassName()').";
+        = "Properties without initializers cannot be used directly in a member initializer without causing a NullReferenceException at runtime. Either use 'new' syntax in the member initializer or initialize the property with a default value (e.g.,'Property { get; set; } = new ClassName()').";
     private const string Category = "Usage";
     private const string DocumentationLinkUri
         = "https://github.com/drewsteinacher/Drewsteinacher.Analyzer/blob/main/docs/DRWSTR0001.md";

@@ -1,13 +1,13 @@
 # DRWSTR0001 - Uninitialized Property Assigned in Member Initializer
 
-### Example Message
-To prevent runtime errors, add `new()` here or initialize property `SomeProperty` with a non-null default value.
+## Example Message
+To prevent runtime errors, add `new` here or initialize property `SomeProperty` with a non-null default value.
 
-### Description
+## Description
 Properties without initializers cannot be used directly in a member initializer without causing a `NullReferenceException` at runtime.
-Either use `new()` syntax in the member initializer or initialize the property with a default value (e.g.,`Property { get; set; } = new ClassName()`).
+Either use `new` syntax in the member initializer or initialize the property with a default value (e.g.,`Property { get; set; } = new ClassName()`).
 
-### Background
+## Background
 When a property is not initialized, it defaults to `null`:
 ```csharp
 public class Outer {
@@ -24,7 +24,7 @@ Initializing an object with class-typed properties can be done [with or without 
 ```csharp
 _ = new Outer
     {
-        SomeProperty = new() // Creates a new instance of Inner
+        SomeProperty = new Inner // Creates a new instance of Inner
         {
             Value = 42
         },
@@ -35,7 +35,7 @@ _ = new Outer
     };
 ```
 
-However, if you omit the `new()` syntax for a non-initialized property, it will always lead to a runtime error, despite being compilable and syntactically valid:
+However, if you omit the `new` syntax for a non-initialized property, it will always lead to a runtime error, despite being compilable and syntactically valid:
 ```csharp
 _ = new Outer
     {
@@ -46,20 +46,22 @@ _ = new Outer
     };
 ```
 
-### Solutions
-To fix this issue, either:
-1. Add `new()` syntax in the member initializer:
+## Solutions
+There are two ways to fix this issue:
+### Option A (recommended): Add `new` syntax in the member initializer
 ```csharp
 _ = new Outer
     {
-        SomeProperty = new() // Creates a new instance of Inner
+        SomeProperty = new Inner // Creates a new instance of Inner
         {
             Value = 42 // Successfully assigns the property to it
         }
     };
 ```
 
-2. Initialize the property with a default value:
+The associated code fix will do this.
+
+### Option (B): Initialize the property with a default value
 ```csharp
 public class Outer {
     public Inner SomeProperty { get; set; } = new(); // Initialized with a non-null default value
@@ -74,7 +76,10 @@ _ = new Outer
     };
 ```
 
-### Remarks
+### Code Fix
+The code fix currently uses `new ClassName {...}` syntax to be explicit, but it could someday be updated to use `new()` via an `.editorconfig` setting.
+
+## Motivation
 This issue warranted a dedicated analyzer rule for several reasons:
 - It is completely valid syntax that compiles successfully without any warnings or errors.
 - It is guaranteed to cause a runtime error if executed.
